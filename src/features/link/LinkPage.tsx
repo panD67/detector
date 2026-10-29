@@ -300,19 +300,25 @@ export default function LinkPage() {
               <h3 className="text-sm font-bold text-white">Bukti eksternal</h3>
               <div className="mt-3 space-y-3">
                 {result.evidence.map((item) => (
-                  <a
-                    key={item.id}
-                    href={item.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 transition hover:border-white/[0.12]"
-                  >
-                    <p className="text-xs font-semibold text-slate-200">{item.title}</p>
-                    <p className="mt-1 text-[11px] text-brand-300">{item.url}</p>
+                  <div key={item.id} className="block rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-xs font-semibold text-slate-200">{item.title}</p>
+                      <Badge variant={item.stance === 'refutes' ? 'danger' : item.stance === 'supports' ? 'brand' : 'neutral'}>
+                        {item.stance}
+                      </Badge>
+                    </div>
+                    {item.url && (
+                      <a href={item.url} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] text-brand-300">
+                        {item.url}
+                      </a>
+                    )}
                     {item.quote && (
                       <p className="mt-2 text-[11px] leading-relaxed text-slate-400">{item.quote}</p>
                     )}
-                  </a>
+                    <p className="mt-2 text-[10px] text-slate-500">
+                      {item.verified ? 'Sumber tervalidasi.' : 'Kutipan belum diverifikasi.'}
+                    </p>
+                  </div>
                 ))}
               </div>
             </Card>

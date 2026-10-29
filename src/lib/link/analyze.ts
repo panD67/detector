@@ -1,6 +1,5 @@
 import { z } from 'zod'
-import { uid } from '../../lib/utils'
-import { titleFromUrl } from '../../lib/utils'
+import { safeExternalUrl, titleFromUrl, uid } from '../../lib/utils'
 import { createAdapter } from '../ai/factory'
 import { getCached, requestHash, setCached } from '../ai/cache'
 import { fetchArticle } from './fetch'
@@ -19,7 +18,10 @@ import { buildLinkPrompt, LINK_PROMPT_VERSION, LinkAiSchema } from './prompt'
 import { isEvidenceGateMet, scoreCapForGate } from '../analysis/gate'
 import { resolveConfidence } from '../analysis/confidence'
 import { resolveStatus } from '../analysis/status'
+import { loadSettings } from '../storage/settings'
 import { saveHistory } from '../storage/history'
+import { lookupFactChecks } from '../evidence/factcheck'
+import { classifyFactCheckRating, classifyStanceFromText } from '../evidence/stance'
 import type { AiProfile } from '../../types/analysis'
 import type { AnalysisMode, LinkResult } from '../../types/analysis'
 
@@ -94,7 +96,6 @@ export async function analyzeLink(
   const pageType = classifyPageType(normalizedUrl, extractedTitle, extractedText)
 
   onProgress?.('Memanggil AI', 55)
-  const adapter = createAdapter(input.profile)
   const { system, user } = buildLinkPrompt({
     url: normalizedUrl,
     title: extractedTitle,
@@ -103,10 +104,17 @@ export async function analyzeLink(
     mode: input.mode,
   })
 
+  const webSearch = input.mode !== 'fast' && (input.profile.kind === 'gemini' || input.profile.kind === 'openrouter')
+  const profileForAdapter =
+    input.profile.kind === 'openrouter' && webSearch
+      ? { ...input.profile, model: `${input.profile.model}:online` }
+      : input.profile
+  const adapter = createAdapter(profileForAdapter)
+
   const cacheKey = requestHash(input.profile.id, {
     system,
     user,
-    webSearch: adapter.supportsWebSearch && input.mode !== 'fast',
+    webSearch,
     jsonMode: true,
   })
 
@@ -115,7 +123,7 @@ export async function analyzeLink(
     aiResponse = await adapter.analyze({
       system,
       user,
-      webSearch: adapter.supportsWebSearch && input.mode !== 'fast',
+      webSearch,
       jsonMode: true,
       timeoutMs: 120_000,
     })
@@ -129,7 +137,7 @@ export async function analyzeLink(
     const retryResponse = await adapter.analyze({
       system: `${system} Perbaiki JSON agar valid dan lengkap.`,
       user: `${user}\n\nRespons sebelumnya tidak valid. Ulangi dengan JSON yang benar.`,
-      webSearch: adapter.supportsWebSearch && input.mode !== 'fast',
+      webSearch,
       jsonMode: true,
       timeoutMs: 120_000,
     })
@@ -138,8 +146,47 @@ export async function analyzeLink(
     setCached(cacheKey, retryResponse)
   }
 
+  onProgress?.('Mencari bukti eksternal', 70)
+  const appSettings = loadSettings().settings
+  const factCheckKey = appSettings.evidenceKeys.factCheck ?? ''
+  const factCheckMatches =
+    input.mode !== 'fast' && factCheckKey
+      ? await Promise.all(
+          ai.claims.slice(0, input.mode === 'deep' ? 5 : 3).map(async (claim) => {
+            try {
+              return await lookupFactChecks(claim.text, factCheckKey)
+            } catch {
+              return []
+            }
+          }),
+        ).then((results) => results.flat())
+      : []
+
+  const webSources = (aiResponse.sources ?? []).map((source) => ({
+    title: source.title,
+    url: source.url,
+    snippet: source.snippet,
+    stance: classifyStanceFromText(`${source.title} ${source.snippet ?? ''}`),
+    verified: false,
+    quality: 'medium' as const,
+  }))
+
+  const factCheckSources = factCheckMatches.map((match) => ({
+    title: match.publisher ? `${match.publisher}: ${match.claim}` : match.claim,
+    url: match.url ?? '',
+    snippet: match.rating,
+    stance: classifyFactCheckRating(match.rating),
+    verified: true,
+    quality: 'high' as const,
+  }))
+
+  const combinedSources = [...webSources, ...factCheckSources].filter(
+    (source) => !source.url || safeExternalUrl(source.url),
+  )
+
   onProgress?.('Menghitung skor', 80)
-  const externalSources = aiResponse.sources?.length ?? 0
+  const externalSources = combinedSources.length
+  const hasFactCheckRefutation = factCheckSources.some((source) => source.stance === 'refutes')
   const independentSignals = [
     domain.reputation < 0.45 || domain.reputation > 0.85,
     clickbait > 0.5,
@@ -148,6 +195,7 @@ export async function analyzeLink(
     consistency < 0.4,
     ai.aiAssessment > 0.6,
     externalSources > 0,
+    hasFactCheckRefutation,
   ].filter(Boolean).length
 
   const features = {
@@ -179,7 +227,7 @@ export async function analyzeLink(
     type: 'link',
     independentSignals,
     externalSources,
-    strongSourceMatch: pageType === 'fact-check' && externalSources > 0,
+    strongSourceMatch: hasFactCheckRefutation || (pageType === 'fact-check' && externalSources > 0),
   })
   const cap = scoreCapForGate('link', gateMet)
   if (cap !== null) score = Math.min(score, cap)
@@ -188,7 +236,7 @@ export async function analyzeLink(
     independentSignals,
     externalSources,
     agreement: externalSources > 1 ? 0.72 : externalSources === 1 ? 0.55 : 0.45,
-    providerSupportsSearch: adapter.supportsWebSearch,
+    providerSupportsSearch: webSearch,
     contradictions: 0,
   })
 
@@ -198,15 +246,16 @@ export async function analyzeLink(
     gateMet,
   })
 
-  const evidence = (aiResponse.sources ?? []).map((source) => ({
+  const evidence = combinedSources.map((source) => ({
     id: uid(),
     title: source.title,
-    url: source.url,
-    publisher: titleFromUrl(source.url),
+    url: source.url || undefined,
+    publisher: source.url ? titleFromUrl(source.url) : source.title,
     retrievedAt: new Date().toISOString(),
-    quality: 'medium' as const,
-    stance: 'insufficient' as const,
+    quality: source.quality,
+    stance: source.stance,
     quote: source.snippet,
+    verified: source.verified,
   }))
 
   const findings = ai.findings.map((finding) => ({

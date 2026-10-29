@@ -49,6 +49,7 @@ export interface EvidenceSource {
   quality: SourceQuality
   stance: EvidenceStance
   quote?: string
+  verified?: boolean
 }
 
 export interface Claim {

@@ -1126,8 +1126,8 @@ Estimasi adalah perkiraan untuk satu pengembang. Fase dapat berjalan berurutan, 
 | 3 | Detektor link v1 | 3 hari | Selesai, v1 |
 | 4 | Detektor komentar v1 | 3 hari | Selesai, v1 |
 | 5 | Detektor foto v1 | 2 hari | Selesai, v1 |
-| 6 | Riwayat dan siklus data | 1.5 hari | Belum |
-| 7 | Evidence engine dan mode | 5 hari | Belum |
+| 6 | Riwayat dan siklus data | 1.5 hari | Selesai, v1 |
+| 7 | Evidence engine dan mode | 5 hari | Selesai, v1 |
 | 8 | Buzzer analytics lanjutan | 4 hari | Belum |
 | 9 | Image forensics lanjutan | 5 hari | Belum |
 | 10 | Evaluasi dan kalibrasi | 7 hari | Belum |
