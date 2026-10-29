@@ -12,7 +12,7 @@ import { ChevronDown } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 const controlBase =
-  'w-full rounded-xl border border-white/10 bg-ink-900/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition focus:border-brand-400/60 focus:outline-none focus:ring-2 focus:ring-brand-400/20 disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-rose-400/60 aria-[invalid=true]:ring-rose-400/15'
+  'w-full rounded-xl border border-white/10 bg-ink-900/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 transition focus:border-brand-400/60 focus:outline-none focus:ring-2 focus:ring-brand-400/20 disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-rose-400/60 aria-[invalid=true]:ring-rose-400/15'
 
 export function Input({
   className,
@@ -47,7 +47,7 @@ export function Select({
         {children}
       </select>
       <ChevronDown
-        className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+        className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
         aria-hidden="true"
       />
     </span>
@@ -107,7 +107,7 @@ export function Field({
       </label>
       {control}
       {hint && (
-        <p id={hintId} className="text-xs leading-relaxed text-slate-500">
+        <p id={hintId} className="text-xs leading-relaxed text-slate-400">
           {hint}
         </p>
       )}

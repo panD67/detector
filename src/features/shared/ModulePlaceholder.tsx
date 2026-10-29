@@ -71,7 +71,7 @@ export default function ModulePlaceholder({
             {capabilities.map((item, index) => (
               <li key={item.title} className="flex items-start gap-3">
                 <span
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.03] font-mono text-[10px] text-slate-500"
+                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.03] font-mono text-[10px] text-slate-400"
                   aria-hidden="true"
                 >
                   {String(index + 1).padStart(2, '0')}
@@ -80,7 +80,7 @@ export default function ModulePlaceholder({
                   <p className="text-[13px] font-semibold text-slate-200">
                     {item.title}
                   </p>
-                  <p className="mt-0.5 text-[12px] leading-relaxed text-slate-500">
+                  <p className="mt-0.5 text-[12px] leading-relaxed text-slate-400">
                     {item.description}
                   </p>
                 </div>
@@ -118,7 +118,7 @@ export default function ModulePlaceholder({
               <Construction className="h-3.5 w-3.5" aria-hidden="true" />
               Langkah berikutnya
             </p>
-            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+            <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
               {nextStep}
             </p>
           </div>

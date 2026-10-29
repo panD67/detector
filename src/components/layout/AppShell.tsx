@@ -34,7 +34,6 @@ function Brand() {
     <NavLink
       to="/"
       className="flex items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
-      aria-label="HoaxLab, kembali ke beranda"
     >
       <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-brand-400/30 bg-brand-400/[0.09] text-brand-300">
         <ShieldCheck className="h-5 w-5" aria-hidden="true" />
@@ -47,7 +46,7 @@ function Brand() {
         <span className="block text-base font-extrabold tracking-tight text-white">
           Hoax<span className="text-brand-400">Lab</span>
         </span>
-        <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
+        <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
           Evidence first
         </span>
       </span>
@@ -100,7 +99,7 @@ export default function AppShell() {
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/[0.06] bg-ink-950/70 px-4 py-5 backdrop-blur-xl lg:flex">
         <Brand />
         <div className="mt-8 flex-1">
-          <p className="mb-2 px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-600">
+          <p className="mb-2 px-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
             Ruang kerja
           </p>
           <NavItems />
@@ -119,12 +118,12 @@ export default function AppShell() {
               className="mt-2"
               label="Fondasi aplikasi"
             />
-            <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
               Modul deteksi belum aktif. Berikutnya: layer AI dan pengaturan
               provider.
             </p>
           </div>
-          <p className="flex items-start gap-1.5 px-1 text-[10px] leading-relaxed text-slate-600">
+          <p className="flex items-start gap-1.5 px-1 text-[10px] leading-relaxed text-slate-400">
             <Lock className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
             Data dan API key akan tersimpan di browser. Tidak ada server
             HoaxLab.
@@ -159,7 +158,7 @@ export default function AppShell() {
           <Suspense fallback={<PageFallback />}>
             <Outlet />
           </Suspense>
-          <footer className="mt-14 flex flex-col gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+          <footer className="mt-14 flex flex-col gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>HoaxLab v0.1.0. Penilaian risiko, bukan putusan fakta.</p>
             <p>Diproses di browser. Tanpa akun. Tanpa server.</p>
           </footer>
@@ -181,7 +180,7 @@ export default function AppShell() {
                 className={({ isActive }) =>
                   cn(
                     'flex flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-semibold transition-colors',
-                    isActive ? 'text-brand-300' : 'text-slate-500',
+                    isActive ? 'text-brand-300' : 'text-slate-400',
                   )
                 }
               >

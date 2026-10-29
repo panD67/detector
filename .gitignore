@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Vite and Vitest caches
+.vite/
+.vitest-cache/
+node_modules/.vite/
+node_modules/.tmp/
+
+# Coverage
+coverage/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local env
+.env
+.env.*
+!.env.example

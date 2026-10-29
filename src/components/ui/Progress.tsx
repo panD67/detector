@@ -27,7 +27,7 @@ export function Progress({
   return (
     <div className={cn('space-y-1.5', className)}>
       {label && (
-        <div className="flex items-center justify-between gap-3 text-[11px] text-slate-500">
+        <div className="flex items-center justify-between gap-3 text-[11px] text-slate-400">
           <span>{label}</span>
           {!indeterminate && <span className="font-mono">{safeValue}%</span>}
         </div>

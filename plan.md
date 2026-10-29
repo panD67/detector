@@ -8,7 +8,7 @@
 | Stack | React 19, Vite 8, TypeScript, Tailwind CSS 4 |
 | Model aplikasi | 100% client-side, tanpa backend |
 | Pemilik | Kamu |
-| Repo saat ini | Hanya berisi `plan.md` |
+| Repo saat ini | Fondasi v0.1.0 + `plan.md` |
 
 Dokumen ini adalah sumber kebenaran untuk arah produk, standar akurasi, aturan anti AI slop, desain UI/UX, dan urutan pengerjaan. Setiap keputusan teknis yang tidak tercantum di sini harus ditambahkan ke dokumen ini sebelum diimplementasikan.
 
@@ -1120,8 +1120,8 @@ Estimasi adalah perkiraan untuk satu pengembang. Fase dapat berjalan berurutan, 
 
 | Fase | Nama | Estimasi | Status |
 |---|---|---|---|
-| 0 | Kontrak produk dan anti-slop | 0.5 hari | Sebagian, dokumen ini |
-| 1 | Fondasi repo dan design system | 1 hari | Belum |
+| 0 | Kontrak produk dan anti-slop | 0.5 hari | Selesai, kontrak di kode |
+| 1 | Fondasi repo dan design system | 1 hari | Selesai, fondasi v0.1.0 |
 | 2 | Layer AI dan pengaturan | 2 hari | Belum |
 | 3 | Detektor link v1 | 3 hari | Belum |
 | 4 | Detektor komentar v1 | 3 hari | Belum |

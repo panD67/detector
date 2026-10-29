@@ -32,7 +32,7 @@ export default function HistoryPage() {
           className="mt-0.5 h-4 w-4 shrink-0 text-brand-400"
           aria-hidden="true"
         />
-        <p className="text-[12px] leading-relaxed text-slate-500">
+        <p className="text-[12px] leading-relaxed text-slate-400">
           Rencana penyimpanan: maksimal 100 hasil, thumbnail dikompresi 400px,
           ekspor JSON dengan validasi, dan tombol hapus semua data. Jika kuota
           penuh, entri tertua dihapus lebih dulu.

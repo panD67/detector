@@ -146,7 +146,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => dismiss(item.id)}
-                className="rounded-md p-1 text-slate-500 transition hover:bg-white/[0.06] hover:text-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+                className="rounded-md p-1 text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
                 aria-label="Tutup notifikasi"
               >
                 <X className="h-3.5 w-3.5" aria-hidden="true" />

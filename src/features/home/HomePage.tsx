@@ -131,7 +131,7 @@ export default function HomePage() {
               Kontrak hasil
             </a>
           </div>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-slate-500">
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-slate-400">
             {[
               'Tanpa backend',
               'API key milikmu',
@@ -151,7 +151,7 @@ export default function HomePage() {
         <Card id="kontrak" className="relative overflow-hidden p-5 sm:p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
                 Kontrak hasil
               </p>
               <h2 className="mt-1 text-base font-bold text-white">
@@ -176,7 +176,7 @@ export default function HomePage() {
                     <p className="text-[13px] font-semibold text-slate-200">
                       {item.label}
                     </p>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500">
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-slate-400">
                       {item.description}
                     </p>
                   </div>
@@ -189,7 +189,7 @@ export default function HomePage() {
               className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-400"
               aria-hidden="true"
             />
-            <p className="text-[11px] leading-relaxed text-slate-500">
+            <p className="text-[11px] leading-relaxed text-slate-400">
               Tidak ada skor yang berarti tanpa keyakinan, sumber, dan daftar
               bagian yang belum diperiksa.
             </p>
@@ -207,7 +207,7 @@ export default function HomePage() {
               Tiga jenis konten, satu standar bukti
             </h2>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             Modul deteksi aktif bertahap sesuai roadmap.
           </p>
         </div>
@@ -231,7 +231,7 @@ export default function HomePage() {
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
                     <Badge variant={module.tone}>{module.phase}</Badge>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-slate-600">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                       <CircleDashed className="h-3 w-3" aria-hidden="true" />
                       Belum aktif
                     </span>
@@ -247,7 +247,7 @@ export default function HomePage() {
                   {module.capabilities.map((capability) => (
                     <li
                       key={capability}
-                      className="rounded-md border border-white/[0.06] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[10px] text-slate-500"
+                      className="rounded-md border border-white/[0.06] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[10px] text-slate-400"
                     >
                       {capability}
                     </li>
@@ -299,7 +299,7 @@ export default function HomePage() {
         <Card className="p-5 sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
                 Status build
               </p>
               <h2 className="mt-1 text-lg font-bold text-white">
@@ -316,7 +316,7 @@ export default function HomePage() {
                     'mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-semibold',
                     item.done
                       ? 'border-brand-400/30 bg-brand-400/10 text-brand-300'
-                      : 'border-white/10 bg-white/[0.03] text-slate-500',
+                      : 'border-white/10 bg-white/[0.03] text-slate-400',
                   )}
                   aria-hidden="true"
                 >
@@ -332,7 +332,7 @@ export default function HomePage() {
                     {item.phase}: {item.label}
                   </p>
                   {!item.done && (
-                    <p className="mt-0.5 text-[11px] text-slate-600">
+                    <p className="mt-0.5 text-[11px] text-slate-400">
                       Belum dikerjakan
                     </p>
                   )}
@@ -367,7 +367,7 @@ export default function HomePage() {
       </section>
 
       <section className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[12px] leading-relaxed text-slate-500">
+        <p className="text-[12px] leading-relaxed text-slate-400">
           HoaxLab bukan lembaga fact-check. Hasil akhir akan selalu menyertakan
           keterbatasan dan langkah verifikasi.
         </p>

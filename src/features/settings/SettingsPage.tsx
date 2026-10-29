@@ -53,7 +53,7 @@ export default function SettingsPage() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-left text-[12px]">
-              <thead className="border-b border-white/[0.06] text-[10px] uppercase tracking-wider text-slate-500">
+              <thead className="border-b border-white/[0.06] text-[10px] uppercase tracking-wider text-slate-400">
                 <tr>
                   <th scope="col" className="px-5 py-2.5 font-semibold">
                     Provider
@@ -78,7 +78,7 @@ export default function SettingsPage() {
                     <td className="px-5 py-3 font-semibold text-slate-200">
                       {provider.name}
                     </td>
-                    <td className="px-3 py-3 text-slate-500">{provider.kind}</td>
+                    <td className="px-3 py-3 text-slate-400">{provider.kind}</td>
                     <td className="px-3 py-3 text-slate-400">{provider.vision}</td>
                     <td className="px-5 py-3 text-slate-400">{provider.search}</td>
                   </tr>
@@ -122,7 +122,7 @@ export default function SettingsPage() {
               className="mt-0.5 h-4 w-4 shrink-0 text-brand-400"
               aria-hidden="true"
             />
-            <p className="text-[11px] leading-relaxed text-slate-500">
+            <p className="text-[11px] leading-relaxed text-slate-400">
               API key di browser rentan jika ada XSS. Fase 2 menambahkan CSP,
               sanitasi input, dan opsi enkripsi sebelum form key dirilis.
             </p>
@@ -131,7 +131,7 @@ export default function SettingsPage() {
       </div>
 
       <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="flex items-start gap-2 text-[11px] leading-relaxed text-slate-500">
+        <p className="flex items-start gap-2 text-[11px] leading-relaxed text-slate-400">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           Halaman ini belum menyimpan data apa pun.
         </p>
