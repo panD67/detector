@@ -1132,7 +1132,7 @@ Estimasi adalah perkiraan untuk satu pengembang. Fase dapat berjalan berurutan, 
 | 9 | Image forensics lanjutan | 5 hari | Selesai, v1 |
 | 10 | Evaluasi dan kalibrasi | 7 hari | Selesai, v1 |
 | 11 | UX, aksesibilitas, performa | 4 hari | Selesai, v1 |
-| 12 | UAT, rilis, operasi | 2 hari | Belum |
+| 12 | UAT, rilis, operasi | 2 hari | Selesai, v1 |
 
 Total estimasi: sekitar 40 hari kerja.
 

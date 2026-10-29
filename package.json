@@ -13,6 +13,7 @@
     "lint:copy": "node scripts/check-copy.mjs",
     "eval:local": "node scripts/eval-local.mjs",
     "check:prompts": "node scripts/check-prompts.mjs",
+    "check:bundle": "node scripts/check-bundle.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
