@@ -1122,8 +1122,8 @@ Estimasi adalah perkiraan untuk satu pengembang. Fase dapat berjalan berurutan, 
 |---|---|---|---|
 | 0 | Kontrak produk dan anti-slop | 0.5 hari | Selesai, kontrak di kode |
 | 1 | Fondasi repo dan design system | 1 hari | Selesai, fondasi v0.1.0 |
-| 2 | Layer AI dan pengaturan | 2 hari | Belum |
-| 3 | Detektor link v1 | 3 hari | Belum |
+| 2 | Layer AI dan pengaturan | 2 hari | Selesai, v1 |
+| 3 | Detektor link v1 | 3 hari | Selesai, v1 |
 | 4 | Detektor komentar v1 | 3 hari | Belum |
 | 5 | Detektor foto v1 | 2 hari | Belum |
 | 6 | Riwayat dan siklus data | 1.5 hari | Belum |

@@ -28,7 +28,16 @@ export type ClaimAssessment =
   | 'mixed'
   | 'insufficient'
 
-export type AiProviderKind = 'openai' | 'gemini' | 'anthropic'
+export type AiProviderKind =
+  | 'openai'
+  | 'gemini'
+  | 'anthropic'
+  | 'openrouter'
+  | 'groq'
+  | 'deepseek'
+  | 'ollama'
+  | 'lmstudio'
+  | 'custom'
 
 export interface EvidenceSource {
   id: string
