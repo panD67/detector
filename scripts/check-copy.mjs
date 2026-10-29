@@ -2,7 +2,7 @@ import { readFile, readdir } from 'node:fs/promises'
 import { extname, join, relative } from 'node:path'
 
 const ROOT = process.cwd()
-const TARGET_DIRECTORIES = ['src', 'public']
+const TARGET_DIRECTORIES = ['src', 'public', 'docs']
 const TARGET_FILES = ['index.html', 'README.md']
 const EXTENSIONS = new Set([
   '.ts',
