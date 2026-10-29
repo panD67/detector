@@ -1,6 +1,7 @@
 import type { AiAdapter, AiRequest, AiResponse } from '../types'
 import type { AiProviderKind } from '../types'
 import { AiError, mapHttpError, toAiError } from '../errors'
+import { fetchWithRetry } from '../http'
 import type { AiProfile } from '../../../types/analysis'
 
 export class GeminiAdapter implements AiAdapter {
@@ -22,12 +23,6 @@ export class GeminiAdapter implements AiAdapter {
   }
 
   async analyze(request: AiRequest): Promise<AiResponse> {
-    const controller = new AbortController()
-    const timeout = setTimeout(
-      () => controller.abort(),
-      request.timeoutMs ?? 120_000,
-    )
-
     try {
       const model = request.images?.length ? this.profile.visionModel || this.profile.model : this.profile.model
       const baseUrl = this.profile.baseUrl?.replace(/\/$/, '') || 'https://generativelanguage.googleapis.com'
@@ -58,23 +53,21 @@ export class GeminiAdapter implements AiAdapter {
         body.tools = [{ googleSearch: {} }]
       }
 
-      let response = await fetch(url, {
+      let response = await fetchWithRetry(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-        signal: controller.signal,
-      })
+        }, { timeoutMs: request.timeoutMs ?? 120_000 })
 
       if (!response.ok && request.jsonMode && response.status === 400) {
         if (body.generationConfig && typeof body.generationConfig === 'object') {
           delete (body.generationConfig as Record<string, unknown>).responseMimeType
         }
-        response = await fetch(url, {
+        response = await fetchWithRetry(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-          signal: controller.signal,
-        })
+          }, { timeoutMs: request.timeoutMs ?? 120_000 })
       }
 
       if (!response.ok) {
@@ -105,8 +98,6 @@ export class GeminiAdapter implements AiAdapter {
       return { text, sources }
     } catch (error) {
       throw toAiError(error, this.label)
-    } finally {
-      clearTimeout(timeout)
     }
   }
 }

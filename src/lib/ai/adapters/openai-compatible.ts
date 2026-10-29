@@ -1,6 +1,7 @@
 import type { AiAdapter, AiRequest, AiResponse } from '../types'
 import type { AiProviderKind } from '../types'
 import { AiError, mapHttpError, toAiError } from '../errors'
+import { fetchWithRetry } from '../http'
 import type { AiProfile } from '../../../types/analysis'
 
 export class OpenAiCompatibleAdapter implements AiAdapter {
@@ -22,12 +23,6 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
   }
 
   async analyze(request: AiRequest): Promise<AiResponse> {
-    const controller = new AbortController()
-    const timeout = setTimeout(
-      () => controller.abort(),
-      request.timeoutMs ?? 120_000,
-    )
-
     try {
       const baseUrl = this.profile.baseUrl?.replace(/\/$/, '') || 'https://api.openai.com/v1'
       const content =
@@ -56,27 +51,25 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
         body.response_format = { type: 'json_object' }
       }
 
-      let response = await fetch(`${baseUrl}/chat/completions`, {
+      let response = await fetchWithRetry(`${baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.profile.apiKey}`,
         },
         body: JSON.stringify(body),
-        signal: controller.signal,
-      })
+        }, { timeoutMs: request.timeoutMs ?? 120_000 })
 
       if (!response.ok && request.jsonMode && response.status === 400) {
         delete body.response_format
-        response = await fetch(`${baseUrl}/chat/completions`, {
+        response = await fetchWithRetry(`${baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${this.profile.apiKey}`,
           },
           body: JSON.stringify(body),
-          signal: controller.signal,
-        })
+        }, { timeoutMs: request.timeoutMs ?? 120_000 })
       }
 
       if (!response.ok) {
@@ -103,8 +96,6 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
       }
     } catch (error) {
       throw toAiError(error, this.label)
-    } finally {
-      clearTimeout(timeout)
     }
   }
 }

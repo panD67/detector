@@ -1,6 +1,7 @@
 import type { AiAdapter, AiRequest, AiResponse } from '../types'
 import type { AiProviderKind } from '../types'
 import { AiError, mapHttpError, toAiError } from '../errors'
+import { fetchWithRetry } from '../http'
 import type { AiProfile } from '../../../types/analysis'
 
 export class AnthropicAdapter implements AiAdapter {
@@ -22,12 +23,6 @@ export class AnthropicAdapter implements AiAdapter {
   }
 
   async analyze(request: AiRequest): Promise<AiResponse> {
-    const controller = new AbortController()
-    const timeout = setTimeout(
-      () => controller.abort(),
-      request.timeoutMs ?? 120_000,
-    )
-
     try {
       const baseUrl = this.profile.baseUrl?.replace(/\/$/, '') || 'https://api.anthropic.com'
       const model = request.images?.length ? this.profile.visionModel || this.profile.model : this.profile.model
@@ -56,7 +51,7 @@ export class AnthropicAdapter implements AiAdapter {
         body.tools = [{ type: 'web_search_20250305', name: 'web_search' }]
       }
 
-      const response = await fetch(`${baseUrl}/v1/messages`, {
+      const response = await fetchWithRetry(`${baseUrl}/v1/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,8 +60,7 @@ export class AnthropicAdapter implements AiAdapter {
           'anthropic-dangerous-direct-browser-access': 'true',
         },
         body: JSON.stringify(body),
-        signal: controller.signal,
-      })
+      }, { timeoutMs: request.timeoutMs ?? 120_000 })
 
       if (!response.ok) {
         throw mapHttpError(response.status, this.label)
@@ -88,8 +82,6 @@ export class AnthropicAdapter implements AiAdapter {
       return { text }
     } catch (error) {
       throw toAiError(error, this.label)
-    } finally {
-      clearTimeout(timeout)
     }
   }
 }
