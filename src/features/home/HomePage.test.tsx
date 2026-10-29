@@ -16,7 +16,7 @@ describe('HomePage', () => {
         name: /Nilai risiko hoaks dengan bukti, bukan tebakan/i,
       }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Fase 1 selesai: fondasi siap')).toBeInTheDocument()
+    expect(screen.getByText('Fondasi siap')).toBeInTheDocument()
     expect(screen.getByText('2 / 13 fase')).toBeInTheDocument()
   })
 })
