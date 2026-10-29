@@ -48,6 +48,27 @@ export function defaultSettings(): AppSettings {
   }
 }
 
+function migrateSettings(settings: AppSettings): AppSettings {
+  const geminiModelMap: Record<string, string> = {
+    'gemini-2.5-flash': 'gemini-3.1-flash-lite',
+    'gemini-2.5-flash-lite': 'gemini-3.1-flash-lite',
+    'gemini-2.5-pro': 'gemini-3.1-pro-preview',
+  }
+  return {
+    ...settings,
+    profiles: settings.profiles.map((profile) => {
+      if (profile.kind !== 'gemini') return profile
+      const nextModel = geminiModelMap[profile.model]
+      if (!nextModel) return profile
+      return {
+        ...profile,
+        model: nextModel,
+        visionModel: profile.visionModel ? nextModel : profile.visionModel,
+      }
+    }),
+  }
+}
+
 export function loadSettings(): { settings: AppSettings; locked: boolean } {
   try {
     const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY)
@@ -62,7 +83,7 @@ export function loadSettings(): { settings: AppSettings; locked: boolean } {
       return { settings: defaultSettings(), locked: true }
     }
     const settings = APP_SETTINGS_SCHEMA.parse(parsed)
-    return { settings, locked: false }
+    return { settings: migrateSettings(settings), locked: false }
   } catch {
     return { settings: defaultSettings(), locked: false }
   }

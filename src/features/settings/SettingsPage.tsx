@@ -8,7 +8,7 @@ import {
   Settings,
   Trash2,
 } from 'lucide-react'
-import { Badge, Button, Card, Field, Input, PageHeader, Select } from '../../components/ui'
+import { Alert, Badge, Button, Card, Field, Input, PageHeader, Select } from '../../components/ui'
 import { useToast } from '../../components/ui/Toast'
 import { createAdapter } from '../../lib/ai/factory'
 import { clearAiCache } from '../../lib/ai/cache'
@@ -51,6 +51,7 @@ export default function SettingsPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showKey, setShowKey] = useState(false)
   const [testing, setTesting] = useState(false)
+  const [connectionResult, setConnectionResult] = useState<{ ok: boolean; message: string } | null>(null)
 
   const activeProfile = useMemo(
     () => settings.profiles.find((profile) => profile.id === settings.activeProfileId) ?? null,
@@ -181,17 +182,13 @@ export default function SettingsPage() {
         jsonMode: true,
         timeoutMs: 30_000,
       })
-      toast({
-        title: 'Koneksi berhasil',
-        description: response.text.slice(0, 120),
-        variant: 'success',
-      })
+      const message = response.text.slice(0, 160)
+      setConnectionResult({ ok: true, message })
+      toast({ title: 'Koneksi berhasil', description: message, variant: 'success' })
     } catch (error) {
-      toast({
-        title: 'Koneksi gagal',
-        description: error instanceof Error ? error.message : 'Kesalahan tidak dikenal.',
-        variant: 'error',
-      })
+      const message = error instanceof Error ? error.message : 'Kesalahan tidak dikenal.'
+      setConnectionResult({ ok: false, message })
+      toast({ title: 'Koneksi gagal', description: message, variant: 'error' })
     } finally {
       setTesting(false)
     }
@@ -346,6 +343,15 @@ export default function SettingsPage() {
               Test koneksi
             </Button>
           </div>
+          {connectionResult && (
+            <Alert
+              variant={connectionResult.ok ? 'success' : 'error'}
+              title={connectionResult.ok ? 'Koneksi berhasil' : 'Koneksi gagal'}
+              className="mt-4"
+            >
+              {connectionResult.message}
+            </Alert>
+          )}
         </Card>
 
         <div className="space-y-4">

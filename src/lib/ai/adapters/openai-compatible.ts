@@ -56,7 +56,7 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
         body.response_format = { type: 'json_object' }
       }
 
-      const response = await fetch(`${baseUrl}/chat/completions`, {
+      let response = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,6 +65,19 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
         body: JSON.stringify(body),
         signal: controller.signal,
       })
+
+      if (!response.ok && request.jsonMode && response.status === 400) {
+        delete body.response_format
+        response = await fetch(`${baseUrl}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.profile.apiKey}`,
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        })
+      }
 
       if (!response.ok) {
         throw mapHttpError(response.status, this.label)

@@ -58,12 +58,24 @@ export class GeminiAdapter implements AiAdapter {
         body.tools = [{ googleSearch: {} }]
       }
 
-      const response = await fetch(url, {
+      let response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         signal: controller.signal,
       })
+
+      if (!response.ok && request.jsonMode && response.status === 400) {
+        if (body.generationConfig && typeof body.generationConfig === 'object') {
+          delete (body.generationConfig as Record<string, unknown>).responseMimeType
+        }
+        response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        })
+      }
 
       if (!response.ok) {
         throw mapHttpError(response.status, this.label)
