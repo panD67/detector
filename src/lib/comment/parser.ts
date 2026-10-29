@@ -3,6 +3,7 @@ export interface ParsedComment {
   username?: string
   text: string
   timestamp?: string
+  replyTo?: string
   raw: string
 }
 
@@ -15,6 +16,7 @@ export interface ParseResult {
 const TEXT_FIELDS = ['text', 'comment', 'komentar', 'content', 'message', 'isi']
 const USER_FIELDS = ['username', 'user', 'author', 'akun', 'name', 'pengguna']
 const TIME_FIELDS = ['timestamp', 'time', 'waktu', 'date', 'created_at', 'createdAt']
+const REPLY_FIELDS = ['reply_to', 'replyTo', 'parent', 'parent_id', 'in_reply_to']
 
 function normalizeHeader(value: string): string {
   return value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '')
@@ -124,11 +126,15 @@ function parseJsonComments(text: string): ParsedComment[] | null {
       const timestamp = TIME_FIELDS.map((field) => record[field]).find(
         (value) => typeof value === 'string' || typeof value === 'number',
       )
+      const replyTo = REPLY_FIELDS.map((field) => record[field]).find(
+        (value) => typeof value === 'string' || typeof value === 'number',
+      )
       return {
         id: String(index),
         username: typeof username === 'string' ? username : undefined,
         text: textValue,
         timestamp: timestamp === undefined ? undefined : String(timestamp),
+        replyTo: replyTo === undefined ? undefined : String(replyTo),
         raw: JSON.stringify(record),
       }
     })
@@ -157,6 +163,7 @@ export function parseComments(input: string): ParseResult {
   const textIndex = findField(headers, TEXT_FIELDS)
   const userIndex = findField(headers, USER_FIELDS)
   const timeIndex = findField(headers, TIME_FIELDS)
+  const replyIndex = findField(headers, REPLY_FIELDS)
 
   const hasHeader = textIndex !== -1
   if (hasHeader) {
@@ -170,6 +177,7 @@ export function parseComments(input: string): ParseResult {
           username: userIndex >= 0 ? row[userIndex]?.trim() : undefined,
           text,
           timestamp: timeIndex >= 0 ? row[timeIndex]?.trim() : undefined,
+          replyTo: replyIndex >= 0 ? row[replyIndex]?.trim() : undefined,
           raw: row.join(','),
         }
       })
@@ -178,6 +186,16 @@ export function parseComments(input: string): ParseResult {
   }
 
   const comments = rows.map((row, index) => {
+    if (row.length >= 4) {
+      return {
+        id: String(index),
+        username: row[0]?.trim(),
+        text: row[1]?.trim() ?? '',
+        timestamp: row[2]?.trim(),
+        replyTo: row[3]?.trim(),
+        raw: row.join(','),
+      }
+    }
     if (row.length >= 3) {
       return {
         id: String(index),

@@ -3,6 +3,7 @@ import { createAdapter } from '../ai/factory'
 import { getCached, requestHash, setCached } from '../ai/cache'
 import { createThumbnail, sha256File } from './hash'
 import { readExif } from './exif'
+import { detectC2pa, reverseImageSearch } from './provenance'
 import { runOcr } from './ocr'
 import { buildImagePrompt, IMAGE_PROMPT_VERSION, ImageAiSchema } from './prompt'
 import { computeImageRisk, imageScoreBreakdown } from './score'
@@ -19,6 +20,8 @@ export interface ImageAnalysisInput {
   context?: string
   ocrEnabled: boolean
   profile?: AiProfile
+  imageUrl?: string
+  reverseSearchKey?: string
 }
 
 function fileToBase64(file: File): Promise<string> {
@@ -57,6 +60,16 @@ export async function analyzeImage(
   const fileHash = await sha256File(input.file)
   const preview = await createThumbnail(input.file)
   const exif = await readExif(input.file)
+  const c2paDetected = await detectC2pa(input.file)
+  let reverseMatches: Awaited<ReturnType<typeof reverseImageSearch>> = []
+  if (input.imageUrl && input.reverseSearchKey) {
+    onProgress?.('Reverse image search', 45)
+    try {
+      reverseMatches = await reverseImageSearch(input.imageUrl, input.reverseSearchKey)
+    } catch {
+      reverseMatches = []
+    }
+  }
 
   let ocrText = ''
   if (input.ocrEnabled) {
@@ -136,16 +149,16 @@ export async function analyzeImage(
   onProgress?.('Menghitung skor', 85)
   const hasExif = Object.keys(exif).length > 0
   const features = {
-    reverseSearchRisk: 0.5,
-    c2paRisk: 0.5,
+    reverseSearchRisk: reverseMatches.length > 0 ? 0.85 : input.reverseSearchKey ? 0.35 : 0.5,
+    c2paRisk: c2paDetected ? 0.1 : 0.45,
     aiDetectorRisk: aiGeneratedLikelihood ?? aiAssessment,
     exifRisk: hasExif ? 0.15 : 0.35,
     claimConsistencyRisk: 1 - ocrConsistency,
     visualArtifactRisk,
   }
   const available = {
-    reverseSearchRisk: false,
-    c2paRisk: false,
+    reverseSearchRisk: Boolean(input.reverseSearchKey),
+    c2paRisk: true,
     aiDetectorRisk: aiGeneratedLikelihood !== null || Boolean(input.profile),
     exifRisk: true,
     claimConsistencyRisk: ocrText.length > 0 || Boolean(input.context),
@@ -157,29 +170,50 @@ export async function analyzeImage(
     ocrText.length > 20,
     Boolean(input.context),
     aiGeneratedLikelihood !== null,
-    (input.profile?.kind === 'gemini' || input.profile?.kind === 'anthropic') ?? false,
+    c2paDetected,
+    reverseMatches.length > 0,
   ].filter(Boolean).length
 
   let score = computeImageRisk(features, available)
   const gateMet = isEvidenceGateMet({
     type: 'image',
     independentSignals,
-    externalSources: 0,
+    externalSources: reverseMatches.length,
     detectorConfidence: aiGeneratedLikelihood ?? undefined,
-    strongSourceMatch: false,
+    strongSourceMatch: reverseMatches.length > 0,
+    provenanceContradiction: false,
   })
   const cap = scoreCapForGate('image', gateMet)
   if (cap !== null) score = Math.min(score, cap)
 
   const confidence = resolveConfidence({
     independentSignals,
-    externalSources: 0,
-    agreement: 0.5,
+    externalSources: reverseMatches.length,
+    agreement: reverseMatches.length > 0 ? 0.7 : 0.5,
     providerSupportsSearch: false,
     contradictions: 0,
   })
 
   const status = resolveStatus({ score, confidence, gateMet })
+
+  const evidence = reverseMatches.map((match) => ({
+    id: uid(),
+    title: match.title,
+    url: match.url,
+    publisher: 'Reverse search',
+    retrievedAt: new Date().toISOString(),
+    quality: 'high' as const,
+    stance: 'insufficient' as const,
+    quote: match.snippet,
+    verified: true,
+  }))
+
+  if (c2paDetected) {
+    limitations.unshift('Manifest C2PA terdeteksi. Periksa provenance sebelum menyimpulkan.')
+  }
+  if (!input.reverseSearchKey) {
+    limitations.push('Reverse search tidak dijalankan karena key tidak tersedia.')
+  }
 
   const result: ImageResult = {
     id: uid(),
@@ -195,7 +229,7 @@ export async function analyzeImage(
     findings,
     recommendations,
     limitations,
-    evidence: [],
+    evidence,
     meta: {
       mode: input.mode,
       providerId: input.profile?.id,

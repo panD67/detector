@@ -428,6 +428,39 @@ export default function SettingsPage() {
         )}
       </Card>
 
+      <Card className="p-5">
+        <h2 className="text-sm font-bold text-white">Kunci sumber bukti</h2>
+        <p className="mt-2 text-xs leading-relaxed text-slate-400">
+          Opsional. Dipakai untuk fact-check dan reverse search.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <Field label="Google Fact Check API key">
+            <Input
+              type="password"
+              value={settings.evidenceKeys.factCheck ?? ''}
+              onChange={(event) =>
+                setSettings((current) => ({
+                  ...current,
+                  evidenceKeys: { ...current.evidenceKeys, factCheck: event.target.value },
+                }))
+              }
+            />
+          </Field>
+          <Field label="SerpAPI key untuk reverse search">
+            <Input
+              type="password"
+              value={settings.evidenceKeys.reverseSearch ?? ''}
+              onChange={(event) =>
+                setSettings((current) => ({
+                  ...current,
+                  evidenceKeys: { ...current.evidenceKeys, reverseSearch: event.target.value },
+                }))
+              }
+            />
+          </Field>
+        </div>
+      </Card>
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-5">
           <h2 className="text-sm font-bold text-white">Kunci data</h2>

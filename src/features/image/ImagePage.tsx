@@ -9,6 +9,7 @@ import {
   Button,
   Card,
   Field,
+  Input,
   PageHeader,
   Progress,
   Select,
@@ -33,6 +34,7 @@ export default function ImagePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [mode, setMode] = useState<AnalysisMode>('balanced')
   const [context, setContext] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const [ocrEnabled, setOcrEnabled] = useState(true)
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -65,6 +67,7 @@ export default function ImagePage() {
     const profile = settings.settings.profiles.find(
       (item) => item.id === settings.settings.activeProfileId,
     )
+    const reverseSearchKey = settings.settings.evidenceKeys.reverseSearch
     if (settings.locked) {
       toast({ title: 'Pengaturan terkunci', variant: 'error' })
       return
@@ -84,6 +87,8 @@ export default function ImagePage() {
           context: context.trim() || undefined,
           ocrEnabled,
           profile: profile ?? undefined,
+          imageUrl: imageUrl.trim() || undefined,
+          reverseSearchKey: reverseSearchKey?.trim() || undefined,
         },
         (label, value) => {
           setStep(label)
@@ -169,6 +174,14 @@ export default function ImagePage() {
               />
               Jalankan OCR lokal
             </label>
+            <Field label="URL gambar publik" hint="Opsional, untuk reverse search jika key tersedia.">
+              <Input
+                type="url"
+                value={imageUrl}
+                onChange={(event) => setImageUrl(event.target.value)}
+                placeholder="https://contoh.com/foto.jpg"
+              />
+            </Field>
             <Button loading={loading} onClick={() => void runAnalysis()} disabled={!file}>
               {loading ? 'Menganalisis' : 'Analisis foto'}
             </Button>

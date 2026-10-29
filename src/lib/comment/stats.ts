@@ -19,9 +19,15 @@ export interface CommentStats {
   mentionCounts: Record<string, number>
   domainCounts: Record<string, number>
   burstScore: number
+  burstLevel: 'none' | 'moderate' | 'high'
   concentrationScore: number
   lexicalVariety: number
   emojiCount: number
+  accountRisk: number
+  networkRisk: number
+  replyNodeCount: number
+  replyEdgeCount: number
+  timeBuckets: Array<{ label: string; count: number }>
 }
 
 const SPAM_PATTERNS = [
@@ -68,7 +74,7 @@ function burstScore(timestamps: string[]): number {
 }
 
 export function computeCommentStats(
-  comments: Array<{ text: string; timestamp?: string }>,
+  comments: Array<{ text: string; timestamp?: string; username?: string; replyTo?: string }>,
   duplicateCount: number,
 ): CommentStats {
   const total = comments.length
@@ -110,6 +116,59 @@ export function computeCommentStats(
     Math.max(topShare(hashtagCounts, hashtags.length), topShare(mentionCounts, mentions.length), topShare(domainCounts, domains.length)),
   )
 
+  const burstScoreValue = burstScore(comments.map((comment) => comment.timestamp ?? ''))
+  const usernames = comments.map((comment) => comment.username?.trim()).filter(Boolean) as string[]
+  const uniqueUsernames = new Set(usernames)
+  const botLike = usernames.filter((name) => /^[a-z]{3,}\d{2,}$/i.test(name) || /\d{4,}/.test(name)).length
+  const missingUsername = comments.filter((comment) => !comment.username?.trim()).length
+  const repeatedRatio = usernames.length === 0 ? 0 : 1 - uniqueUsernames.size / usernames.length
+  const accountRisk =
+    usernames.length === 0
+      ? 0.5
+      : Math.min(1, repeatedRatio * 0.5 + (botLike / Math.max(1, usernames.length)) * 0.3 + (missingUsername / comments.length) * 0.2)
+
+  const replyEdges = comments.filter((comment) => comment.replyTo?.trim()).length
+  const replyNodes = new Set([...comments.map((c, index) => c.username ?? `comment-${index}`), ...comments.map((c) => c.replyTo ?? '').filter(Boolean)]).size
+  let components = replyNodes
+  if (replyEdges > 0) {
+    const parent = new Map<string, string>()
+    const find = (value: string): string => {
+      if (!parent.has(value)) parent.set(value, value)
+      if (parent.get(value) !== value) parent.set(value, find(parent.get(value)!))
+      return parent.get(value)!
+    }
+    const union = (a: string, b: string) => {
+      const rootA = find(a)
+      const rootB = find(b)
+      if (rootA !== rootB) parent.set(rootA, rootB)
+    }
+    for (const comment of comments) {
+      if (comment.replyTo?.trim()) {
+        union(comment.username ?? comment.text, comment.replyTo)
+      }
+    }
+    components = new Set([...parent.keys()].map(find)).size || replyNodes
+  }
+  const networkRisk =
+    replyEdges === 0
+      ? 0
+      : Math.min(1, replyEdges / Math.max(1, replyNodes) * 0.4 + (1 - components / Math.max(1, replyNodes)) * 0.6)
+
+  const bucketMap = new Map<string, number>()
+  for (const comment of comments) {
+    if (!comment.timestamp) continue
+    const date = new Date(comment.timestamp)
+    if (Number.isNaN(date.getTime())) continue
+    const label = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+    bucketMap.set(label, (bucketMap.get(label) ?? 0) + 1)
+  }
+  const timeBuckets = [...bucketMap.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, count]) => ({ label, count }))
+
+  const burstLevel: CommentStats['burstLevel'] =
+    burstScoreValue >= 0.6 ? 'high' : burstScoreValue >= 0.3 ? 'moderate' : 'none'
+
   return {
     total,
     unique: total - duplicateCount,
@@ -122,9 +181,15 @@ export function computeCommentStats(
     hashtagCounts,
     mentionCounts,
     domainCounts,
-    burstScore: burstScore(comments.map((comment) => comment.timestamp ?? '')),
+    burstScore: burstScoreValue,
+    burstLevel,
     concentrationScore,
     lexicalVariety,
     emojiCount: comments.reduce((sum, comment) => sum + countEmoji(comment.text), 0),
+    accountRisk,
+    networkRisk,
+    replyNodeCount: replyNodes,
+    replyEdgeCount: replyEdges,
+    timeBuckets,
   }
 }

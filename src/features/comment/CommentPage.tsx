@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   MessagesSquare,
   Upload,
@@ -16,6 +16,7 @@ import {
 } from '../../components/ui'
 import { useToast } from '../../components/ui/Toast'
 import { analyzeComments } from '../../lib/comment/analyze'
+import { computeCommentStats } from '../../lib/comment/stats'
 import { parseComments } from '../../lib/comment/parser'
 import { loadSettings } from '../../lib/storage/settings'
 import type { AnalysisMode, CommentResult } from '../../types/analysis'
@@ -38,6 +39,11 @@ export default function CommentPage() {
   const [error, setError] = useState<string | null>(null)
 
   const parsed = parseComments(input)
+
+  const timeBuckets = useMemo(
+    () => computeCommentStats(parsed.comments, 0).timeBuckets,
+    [input],
+  )
 
   function handleFile(file: File): void {
     const reader = new FileReader()
@@ -164,6 +170,27 @@ export default function CommentPage() {
         )}
       </Card>
 
+      {timeBuckets.length > 0 && (
+        <Card className="p-5">
+          <h3 className="text-sm font-bold text-white">Timeline komentar</h3>
+          <div className="mt-4 flex h-32 items-end gap-1">
+            {timeBuckets.slice(-24).map((bucket) => {
+              const max = Math.max(...timeBuckets.map((item) => item.count), 1)
+              return (
+                <div
+                  key={bucket.label}
+                  className="flex-1 rounded-t bg-brand-400/70"
+                  style={{ height: `${(bucket.count / max) * 100}%` }}
+                  title={`${bucket.label}: ${bucket.count}`}
+                />
+              )
+            })}
+          </div>
+          <p className="mt-2 text-[11px] text-slate-400">
+            Setiap batang mewakili satu menit. Puncak tajam menunjukkan burst.
+          </p>
+        </Card>
+      )}
       {result && (
         <div className="space-y-5">
           <Card className="p-5 sm:p-6">

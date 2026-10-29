@@ -140,8 +140,8 @@ export async function analyzeComments(
     concentrationRisk: stats.concentrationScore,
     spamRisk: Math.min(1, stats.spamPercent / 100),
     lexicalRisk: Math.max(0, 1 - stats.lexicalVariety),
-    metadataRisk: stats.total > 0 && parsed.comments.some((comment) => comment.username) ? 0.25 : 0.55,
-    networkRisk: 0,
+    metadataRisk: stats.accountRisk,
+    networkRisk: stats.networkRisk,
     aiAssessmentRisk: aiAssessment,
   }
 
