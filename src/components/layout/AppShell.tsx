@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import {
   History,
@@ -11,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Progress } from '../ui'
 import { cn } from '../../lib/utils'
+import PageFallback from './PageFallback'
 
 const navigation = [
   { to: '/', label: 'Beranda', icon: Home, end: true },
@@ -154,7 +156,9 @@ export default function AppShell() {
           tabIndex={-1}
           className="mx-auto w-full max-w-6xl px-4 pb-28 pt-6 outline-none sm:px-6 lg:px-10 lg:pb-12 lg:pt-10"
         >
-          <Outlet />
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
           <footer className="mt-14 flex flex-col gap-2 border-t border-white/[0.06] pt-5 text-[11px] text-slate-600 sm:flex-row sm:items-center sm:justify-between">
             <p>HoaxLab v0.1.0. Penilaian risiko, bukan putusan fakta.</p>
             <p>Diproses di browser. Tanpa akun. Tanpa server.</p>

@@ -1,13 +1,15 @@
+import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppShell from '../components/layout/AppShell'
 import HomePage from '../features/home/HomePage'
-import LinkPage from '../features/link/LinkPage'
-import CommentPage from '../features/comment/CommentPage'
-import ImagePage from '../features/image/ImagePage'
-import HistoryPage from '../features/history/HistoryPage'
-import SettingsPage from '../features/settings/SettingsPage'
-import NotFoundPage from '../features/not-found/NotFoundPage'
 import ScrollToTop from './ScrollToTop'
+
+const LinkPage = lazy(() => import('../features/link/LinkPage'))
+const CommentPage = lazy(() => import('../features/comment/CommentPage'))
+const ImagePage = lazy(() => import('../features/image/ImagePage'))
+const HistoryPage = lazy(() => import('../features/history/HistoryPage'))
+const SettingsPage = lazy(() => import('../features/settings/SettingsPage'))
+const NotFoundPage = lazy(() => import('../features/not-found/NotFoundPage'))
 
 export default function App() {
   return (
