@@ -72,6 +72,7 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
 
       const data = (await response.json()) as {
         choices?: Array<{ message?: { content?: string } }>
+        citations?: string[]
         usage?: { prompt_tokens?: number; completion_tokens?: number }
       }
       const text = data.choices?.[0]?.message?.content
@@ -81,6 +82,7 @@ export class OpenAiCompatibleAdapter implements AiAdapter {
 
       return {
         text,
+        sources: (data.citations ?? []).map((url) => ({ title: 'Sumber web', url })),
         usage: {
           inputTokens: data.usage?.prompt_tokens,
           outputTokens: data.usage?.completion_tokens,

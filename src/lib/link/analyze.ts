@@ -104,7 +104,11 @@ export async function analyzeLink(
     mode: input.mode,
   })
 
-  const webSearch = input.mode !== 'fast' && (input.profile.kind === 'gemini' || input.profile.kind === 'openrouter')
+  const webSearch =
+    input.mode !== 'fast' &&
+    (input.profile.kind === 'gemini' ||
+      input.profile.kind === 'openrouter' ||
+      (input.profile.kind === 'custom' && (input.profile.baseUrl ?? '').includes('perplexity.ai')))
   const profileForAdapter =
     input.profile.kind === 'openrouter' && webSearch
       ? { ...input.profile, model: `${input.profile.model}:online` }

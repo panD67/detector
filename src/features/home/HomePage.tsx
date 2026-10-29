@@ -218,7 +218,7 @@ export default function HomePage() {
               <Link
                 key={module.to}
                 to={module.to}
-                className="group flex flex-col rounded-2xl border border-white/[0.07] bg-ink-850/70 p-5 transition hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_18px_50px_-28px_rgba(0,0,0,0.9)]"
+                className="group flex flex-col glass-card card-hover rounded-3xl p-5 transition hover:-translate-y-0.5 hover:border-white/[0.14] hover:shadow-[0_18px_50px_-28px_rgba(0,0,0,0.9)]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div
@@ -366,7 +366,7 @@ export default function HomePage() {
         </Card>
       </section>
 
-      <section className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <section className="flex flex-col items-start gap-3 glass-card rounded-3xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[12px] leading-relaxed text-slate-400">
           HoaxLab bukan lembaga fact-check. Hasil akhir akan selalu menyertakan
           keterbatasan dan langkah verifikasi.

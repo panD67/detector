@@ -102,6 +102,17 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     notes: 'Server lokal OpenAI-compatible.',
   },
   {
+    id: 'perplexity',
+    label: 'Perplexity',
+    kind: 'custom',
+    baseUrl: 'https://api.perplexity.ai',
+    model: 'sonar',
+    visionModel: '',
+    supportsVision: false,
+    supportsWebSearch: true,
+    notes: 'Sumber dan kutipan web. Model sonar.',
+  },
+  {
     id: 'custom',
     label: 'Custom',
     kind: 'custom',
