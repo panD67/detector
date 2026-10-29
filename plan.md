@@ -1130,8 +1130,8 @@ Estimasi adalah perkiraan untuk satu pengembang. Fase dapat berjalan berurutan, 
 | 7 | Evidence engine dan mode | 5 hari | Selesai, v1 |
 | 8 | Buzzer analytics lanjutan | 4 hari | Selesai, v1 |
 | 9 | Image forensics lanjutan | 5 hari | Selesai, v1 |
-| 10 | Evaluasi dan kalibrasi | 7 hari | Belum |
-| 11 | UX, aksesibilitas, performa | 4 hari | Belum |
+| 10 | Evaluasi dan kalibrasi | 7 hari | Selesai, v1 |
+| 11 | UX, aksesibilitas, performa | 4 hari | Selesai, v1 |
 | 12 | UAT, rilis, operasi | 2 hari | Belum |
 
 Total estimasi: sekitar 40 hari kerja.

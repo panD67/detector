@@ -25,7 +25,7 @@ export function Progress({
   const safeValue = Math.max(0, Math.min(100, value ?? 0))
 
   return (
-    <div className={cn('space-y-1.5', className)}>
+    <div className={cn('space-y-1.5', className)} aria-live="polite">
       {label && (
         <div className="flex items-center justify-between gap-3 text-[11px] text-slate-400">
           <span>{label}</span>

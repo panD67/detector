@@ -1,0 +1,21 @@
+{
+  "version": "2026.1-seed",
+  "date": "2026-10-29",
+  "weights": {
+    "link": {
+      "domainRisk": 0.16,
+      "pageTypeRisk": 0.1,
+      "claimSupportRisk": 0.22,
+      "stanceConsistencyRisk": 0.2,
+      "internalStyleRisk": 0.1,
+      "recencyRisk": 0.08,
+      "mediaProvenanceRisk": 0.08,
+      "aiAssessmentRisk": 0.06
+    }
+  },
+  "metrics": {
+    "linkF1": 0.8,
+    "commentF1": 1,
+    "imageF1": 0.8
+  }
+}

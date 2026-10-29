@@ -1,0 +1,14 @@
+[
+  { "id": "RT01", "module": "link", "input": "Satire article with clear parody label", "expected": "No strong indication without context" },
+  { "id": "RT02", "module": "link", "input": "Fact-check article discussing a hoax", "expected": "Fact-check page not scored as hoax" },
+  { "id": "RT03", "module": "link", "input": "Opinion article with alarming language", "expected": "Opinion not automatically high risk" },
+  { "id": "RT04", "module": "link", "input": "Article with no external evidence", "expected": "Score capped and status needs verification" },
+  { "id": "RT05", "module": "comment", "input": "Angry but organic comments", "expected": "No coordination score from sentiment alone" },
+  { "id": "RT06", "module": "comment", "input": "Small sample of 5 comments", "expected": "Low confidence" },
+  { "id": "RT07", "module": "comment", "input": "Repeated spam comments", "expected": "Spam detected as aggregate pattern" },
+  { "id": "RT08", "module": "image", "input": "Authentic photo without EXIF", "expected": "No high risk from missing metadata" },
+  { "id": "RT09", "module": "image", "input": "AI generated satire image", "expected": "Probabilistic language only" },
+  { "id": "RT10", "module": "image", "input": "Real photo with false caption", "expected": "Context risk considered" },
+  { "id": "RT11", "module": "link", "input": "Model returns invalid JSON", "expected": "One retry then partial result" },
+  { "id": "RT12", "module": "all", "input": "Provider API key invalid", "expected": "Actionable error without key leakage" }
+]

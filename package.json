@@ -11,6 +11,8 @@
     "typecheck": "tsc -b",
     "lint": "oxlint src",
     "lint:copy": "node scripts/check-copy.mjs",
+    "eval:local": "node scripts/eval-local.mjs",
+    "check:prompts": "node scripts/check-prompts.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

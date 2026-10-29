@@ -1,0 +1,74 @@
+[
+  {
+    "id": "L001",
+    "url": "https://reuters.com/world/example",
+    "title": "Government announces new public health measure",
+    "text": "The ministry said the policy will begin next month. Officials cited budget documents and a press briefing.",
+    "label": "credible",
+    "category": "news",
+    "source": "seed"
+  },
+  {
+    "id": "L002",
+    "url": "https://turnbackhoax.id/example",
+    "title": "Cek fakta: video banjir lama disebarkan ulang",
+    "text": "Video tersebut berasal dari 2019. Pihak berwenang menyatakan konteksnya berbeda.",
+    "label": "credible",
+    "category": "fact-check",
+    "source": "seed"
+  },
+  {
+    "id": "L003",
+    "url": "https://example-blog.com/heboh",
+    "title": "HEBOH!!! Rahasia besar yang disembunyikan!!!",
+    "text": "Belum ada sumber resmi. Bagikan sebelum dihapus.",
+    "label": "hoax",
+    "category": "clickbait",
+    "source": "seed"
+  },
+  {
+    "id": "L004",
+    "url": "https://medium.com/@user/opini",
+    "title": "Opini: kebijakan ini mungkin tidak adil",
+    "text": "Penulis berpendapat bahwa dampaknya belum jelas. Tidak ada data pendukung.",
+    "label": "opinion",
+    "category": "opinion",
+    "source": "seed"
+  },
+  {
+    "id": "L005",
+    "url": "https://unknown-site.net/viral",
+    "title": "Ternyata ini yang terjadi, jangan sampai terlambat",
+    "text": "Konten pendek tanpa sumber dan tanpa tanggal.",
+    "label": "hoax",
+    "category": "clickbait",
+    "source": "seed"
+  },
+  {
+    "id": "L006",
+    "url": "https://kompas.com/read/example",
+    "title": "Kebijakan baru mulai diterapkan",
+    "text": "Artikel menjelaskan jadwal, dampak, dan pernyataan resmi dari kementerian.",
+    "label": "credible",
+    "category": "news",
+    "source": "seed"
+  },
+  {
+    "id": "L007",
+    "url": "https://satire.example.com/parodi",
+    "title": "Parodi: pejabat menemukan tombol ajaib",
+    "text": "Tulisan ini jelas parodi dan tidak dimaksudkan sebagai berita.",
+    "label": "satire",
+    "category": "satire",
+    "source": "seed"
+  },
+  {
+    "id": "L008",
+    "url": "https://detik.com/news/example",
+    "title": "Insiden lalu lintas ditangani petugas",
+    "text": "Laporan menyebut waktu, lokasi, dan keterangan polisi.",
+    "label": "credible",
+    "category": "news",
+    "source": "seed"
+  }
+]
